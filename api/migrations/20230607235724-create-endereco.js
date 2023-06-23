@@ -4,7 +4,7 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('enderecos', {
+        await queryInterface.createTable('addresses', {
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -19,41 +19,41 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE
         },
-        idAluno: {
+        idStudent: {
             allowNull: false,
             type: Sequelize.INTEGER,
             references: {
-                model: 'alunos',
+                model: 'students',
                 key: 'id'
             },
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         },
-        cep: {
+        zip_code: {
             type: Sequelize.STRING
         },
-        logradouro: {
+        public_place: {
             type: Sequelize.STRING
         },
-        bairro: {
+        neighborhood: {
             type: Sequelize.STRING
         },
-        cidade: {
+        city: {
             type: Sequelize.STRING
         },
-        estado: {
+        state: {
             type: Sequelize.STRING
         },
-        numero: {
+        number: {
             type: Sequelize.STRING
         },
-        complemento: {
+        complement: {
             type: Sequelize.STRING
         }
         });
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable('enderecos');
+        await queryInterface.dropTable('addresses');
     }
 };
