@@ -1,17 +1,35 @@
 const { where } = require('sequelize');
 const database = require('../models');
+const SearchStudent = require('./SearchStudent');
 
 class StudentController 
 {
-    static async all(req, res)
+    static async all(req, res, next)
     {
         try{
-            const allStudents = await database.students.findAll({
-                include: [{ 
-                    model: database.addresses, 
-                    as: 'addresses' 
-                }]
-            });
+            const { q } = req.query;
+            const searchFields = ['name', 'cpf', 'registration'];
+            let where = {};
+
+            if (q) {
+                where[database.Sequelize.Op.or] = searchFields.map(field => ({
+                    [field]: {
+                        [database.Sequelize.Op.like]: `%${q}%`
+                    }
+                }));
+            }
+
+            const options = {
+                include: [
+                {
+                    model: database.addresses,
+                    as: 'addresses'
+                }
+                ],
+                where: where
+            };
+
+            const allStudents = await database.students.findAll(options);
             return res.status(200).json(allStudents);
         } catch (error) {
             return res.status(500).json(error.message);
@@ -101,8 +119,7 @@ class StudentController
         } catch (error) {
             return res.status(500).json(error.message);
         }
-    }
-      
+    }       
 }
 
 module.exports = StudentController
